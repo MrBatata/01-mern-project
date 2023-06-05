@@ -9,4 +9,4 @@
 - post
 - friend
 
-# currently at : https://youtu.be/K8YELRmUb5o?t=12847
+# currently at : https://youtu.be/K8YELRmUb5o?t=16702

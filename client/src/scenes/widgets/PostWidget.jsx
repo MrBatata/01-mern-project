@@ -7,6 +7,7 @@ import {
 import { Box, Divider, IconButton, Typography, useTheme } from "@mui/material";
 import { UserContext } from "App";
 import FlexBetween from "components/FlexBetween";
+import Friend from "components/Friend";
 // import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useContext, useState } from "react";
@@ -47,12 +48,12 @@ const PostWidget = ({
 
   return (
     <WidgetWrapper m="2rem 0">
-      {/* <Friend
+      <Friend
         friendId={postUserId}
         name={name}
         subtitle={location}
         userPicturePath={userPicturePath}
-      /> */}
+      />
       <Typography color={main} sx={{ mt: "1rem" }}>
         {description}
       </Typography>
@@ -69,11 +70,10 @@ const PostWidget = ({
         <FlexBetween gap="1rem">
           <FlexBetween gap="0.3rem">
             <IconButton onClick={patchLike}>
-              {isLiked ? (
-                <FavoriteOutlined sx={{ color: primary }} />
-              ) : (
-                <FavoriteBorderOutlined />
-              )}
+              {isLiked
+                ? (<FavoriteOutlined sx={{ color: primary }} />)
+                : (<FavoriteBorderOutlined />)
+              }
             </IconButton>
             <Typography>{likeCount}</Typography>
           </FlexBetween>

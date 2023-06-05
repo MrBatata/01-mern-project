@@ -17,6 +17,7 @@ function App() {
   const [user, setUser] = useLocalStorage('user', null);
   const [token, setToken] = useLocalStorage('token', null);
   const [posts, setPosts] = useLocalStorage('posts', []);
+  const [friendList, setfriendList] = useLocalStorage('friends', []);
   const isAuth = Boolean(token);
 
   const handleColorMode = () => {
@@ -31,10 +32,7 @@ function App() {
 
   const handleFriends = (friends) => {
     if (user) {
-      setUser(
-        ...user,
-        user.friends = friends
-      )
+      setfriendList(friends)
     } else {
       console.error('user friends non-existent');
     }
@@ -47,7 +45,7 @@ function App() {
     <div className="app">
       <BrowserRouter>
 
-        <UserContext.Provider value={{ user, setUser, token, setToken, posts, setPosts, handleLogout, handleFriends }}>
+        <UserContext.Provider value={{ user, setUser, token, setToken, posts, setPosts, handleLogout, friendList, handleFriends }}>
           <ColorModeContext.Provider value={{ handleColorMode }}>
             <ThemeProvider theme={theme}>
               <CssBaseline />

@@ -4,6 +4,7 @@ import { Box, useMediaQuery } from '@mui/material';
 import UserWidget from 'scenes/widgets/UserWidget';
 import MyPostWidget from 'scenes/widgets/MyPostWidget';
 import PostsWidget from 'scenes/widgets/PostsWidget';
+import FriendListWidget from 'scenes/widgets/FriendListWidget';
 
 const HomePage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1100px)");
@@ -34,8 +35,10 @@ const HomePage = () => {
 
         {/* SECTION 3: only desktop */}
         {isNonMobileScreens && (
-          <Box flexBasis="26%"> Section 3
+          <Box flexBasis="26%">
+            <FriendListWidget />
             <Box m="2rem 0" />
+            <p>Only in dektop</p>
           </Box>
         )}
       </Box>

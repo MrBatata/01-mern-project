@@ -15,7 +15,7 @@ import WidgetWrapper from "components/WidgetWrapper";
 const UserWidget = () => {
   const { palette } = useTheme();
   const navigate = useNavigate();
-  const { token, setToken, user, setUser, setPosts } = useContext(UserContext);
+  const { token, setToken, user, setUser, setPosts, friendList } = useContext(UserContext);
   const dark = palette.neutral.dark;
   const medium = palette.neutral.medium;
   const main = palette.neutral.main;
@@ -51,7 +51,7 @@ const UserWidget = () => {
 
   useEffect(() => {
     getUser();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [friendList]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!user) {
     return null;
