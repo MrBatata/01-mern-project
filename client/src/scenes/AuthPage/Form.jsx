@@ -1,4 +1,10 @@
-import { useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Dropzone from 'react-dropzone';
+import { UserContext } from 'App';
+import FlexBetween from 'components/FlexBetween';
+import { Formik } from 'formik';
+import * as yup from 'yup';
 import {
   Box,
   Button,
@@ -8,13 +14,8 @@ import {
   useTheme,
 } from '@mui/material';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { Formik } from 'formik';
-import * as yup from 'yup';
-import { useNavigate } from 'react-router-dom';
-import Dropzone from 'react-dropzone';
-import FlexBetween from 'components/FlexBetween';
-import { UserContext } from 'App';
 
+/** YUP VALIDATION FOR REGISTER */
 const registerSchema = yup.object().shape({
   firstName: yup.string().required('required'),
   lastName: yup.string().required('required'),
@@ -25,6 +26,7 @@ const registerSchema = yup.object().shape({
   picture: yup.string().required('required'),
 });
 
+/** YUP VALIDATION FOR LOGIN */
 const loginSchema = yup.object().shape({
   email: yup.string().email('invalid email').required('required'),
   password: yup.string().required('required'),
@@ -46,12 +48,13 @@ const initialValuesLogin = {
 };
 
 const Form = () => {
-  const { setUser, setToken } = useContext(UserContext);
-
-  const [pageType, setPageType] = useState('login');
-  const { palette } = useTheme();
   const navigate = useNavigate();
+  const theme = useTheme();
   const isNonMobile = useMediaQuery('(min-width:600px)');
+
+  const { setUser, setToken } = useContext(UserContext);
+  const [pageType, setPageType] = useState('login');
+
   const isLogin = pageType === 'login';
   const isRegister = pageType === 'register';
 
@@ -181,7 +184,7 @@ const Form = () => {
                 />
                 <Box
                   gridColumn='span 4'
-                  border={`1px solid ${palette.neutral.medium}`}
+                  border={`1px solid ${theme.palette.neutral.medium}`}
                   borderRadius='5px'
                   p='1rem'
                 >
@@ -193,7 +196,7 @@ const Form = () => {
                     {({ getRootProps, getInputProps }) => (
                       <Box
                         {...getRootProps()}
-                        border={`2px dashed ${palette.primary.main}`}
+                        border={`2px dashed ${theme.palette.primary.main}`}
                         p='1rem'
                         sx={{ '&:hover': { cursor: 'pointer' } }}
                       >
@@ -244,9 +247,9 @@ const Form = () => {
               sx={{
                 m: '2rem 0',
                 p: '1rem',
-                backgroundColor: palette.primary.main,
-                color: palette.background.alt,
-                '&:hover': { color: palette.primary.main },
+                backgroundColor: theme.palette.primary.main,
+                color: theme.palette.background.alt,
+                '&:hover': { color: theme.palette.primary.main },
               }}
             >
               {(isLogin)
@@ -261,10 +264,10 @@ const Form = () => {
               }}
               sx={{
                 textDecoration: 'underline',
-                color: palette.primary.main,
+                color: theme.palette.primary.main,
                 '&:hover': {
                   cursor: 'pointer',
-                  color: palette.primary.light,
+                  color: theme.palette.primary.light,
                 },
               }}
             >

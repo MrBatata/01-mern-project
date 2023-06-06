@@ -19,7 +19,8 @@ const PostsWidget = () => {
         throw new Error('Error occurred while fetching posts');
       };
       const data = await response.json();
-      setPosts(data);
+      const sortedPosts = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      setPosts(sortedPosts);
 
     } catch (error) {
       // Handle the error
@@ -46,33 +47,20 @@ const PostsWidget = () => {
 
   return (
     <>
-      {posts.map(
-        ({
-          _id,
-          userId,
-          firstName,
-          lastName,
-          description,
-          location,
-          picturePath,
-          userPicturePath,
-          likes,
-          comments,
-        }) => (
-          <PostWidget
-            key={_id}
-            postId={_id}
-            postUserId={userId}
-            name={`${firstName} ${lastName}`}
-            description={description}
-            location={location}
-            picturePath={picturePath}
-            userPicturePath={userPicturePath}
-            likes={likes}
-            comments={comments}
-          />
-        )
-      )}
+      {posts.map((eachPost) => (
+        <PostWidget
+          key={eachPost._id}
+          postId={eachPost._id}
+          postUserId={eachPost.userId}
+          name={`${eachPost.firstName} ${eachPost.lastName}`}
+          description={eachPost.description}
+          picturePath={eachPost.picturePath}
+          userPicturePath={eachPost.userPicturePath}
+          likes={eachPost.likes}
+          comments={eachPost.comments}
+          createdAt={eachPost.createdAt}
+        />
+      ))}
     </>
   );
 };

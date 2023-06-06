@@ -1,5 +1,9 @@
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from 'App';
+import FlexBetween from 'components/FlexBetween';
+import Dropzone from 'react-dropzone';
+import UserImage from 'components/UserImage';
+import WidgetWrapper from 'components/WidgetWrapper';
 import {
   EditOutlined,
   DeleteOutlined,
@@ -19,10 +23,6 @@ import {
   IconButton,
   useMediaQuery,
 } from '@mui/material';
-import FlexBetween from 'components/FlexBetween';
-import Dropzone from 'react-dropzone';
-import UserImage from 'components/UserImage';
-import WidgetWrapper from 'components/WidgetWrapper';
 
 const MyPostWidget = () => {
   /** DATA */

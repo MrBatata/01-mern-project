@@ -1,4 +1,7 @@
 import { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ColorModeContext, UserContext } from 'App';
+import FlexBetween from 'components/FlexBetween';
 import {
   Box,
   IconButton,
@@ -20,9 +23,6 @@ import {
   Menu,
   Close,
 } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
-import FlexBetween from 'components/FlexBetween';
-import { ColorModeContext, UserContext } from 'App';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -33,14 +33,14 @@ const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
   const isNonMobileScreens = useMediaQuery('(min-width: 1100px)');
 
-  const theme = useTheme();
-  const neutralLight = theme.palette.neutral.light;
-  const dark = theme.palette.neutral.dark;
-  const background = theme.palette.background.default;
-  const primaryLight = theme.palette.primary.light;
-  const alt = theme.palette.background.alt;
+  const { palette } = useTheme();
+  const neutralLight = palette.neutral.light;
+  const dark = palette.neutral.dark;
+  const background = palette.background.default;
+  const primaryLight = palette.primary.light;
+  const alt = palette.background.alt;
 
-  const fullName = (user) && `${user.firstName} ${user.lastName}`;
+  const fullName = (user) ? `${user.firstName} ${user.lastName}` : '';
 
   return (
     <FlexBetween padding="1rem 6%" backgroundColor={alt}>
@@ -79,7 +79,7 @@ const Navbar = () => {
       {isNonMobileScreens ? (
         <FlexBetween gap="2rem">
           <IconButton onClick={handleColorMode}>
-            {theme.palette.mode === "dark" ? (
+            {palette.mode === "dark" ? (
               <DarkMode sx={{ fontSize: "25px" }} />
             ) : (
               <LightMode sx={{ color: dark, fontSize: "25px" }} />
@@ -106,9 +106,11 @@ const Navbar = () => {
               }}
               input={<InputBase />}
             >
-              <MenuItem value={fullName}>
-                <Typography>{fullName}</Typography>
-              </MenuItem>
+              {(user) &&
+                <MenuItem value={fullName}>
+                  <Typography>{fullName}</Typography>
+                </MenuItem>
+              }
               <MenuItem onClick={handleLogout}>Log Out</MenuItem>
             </Select>
           </FormControl>
@@ -154,7 +156,7 @@ const Navbar = () => {
               onClick={handleColorMode}
               sx={{ fontSize: "25px" }}
             >
-              {theme.palette.mode === "dark" ? (
+              {palette.mode === "dark" ? (
                 <DarkMode sx={{ fontSize: "25px" }} />
               ) : (
                 <LightMode sx={{ color: dark, fontSize: "25px" }} />

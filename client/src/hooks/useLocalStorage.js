@@ -11,13 +11,13 @@ const useLocalStorage = (key, defaultValue = null) => {
 			}
 			return defaultValue;
 		} catch (error) {
-			console.log(error, 'Cannot find key in localStorage');
+			// console.log(error, 'Cannot find key in localStorage');
 			return defaultValue;
 		}
 	});
 
 	useEffect(() => {
-		console.log(`Setting localStorage key: "${key}" with new value`);
+		// console.log(`Setting localStorage key: "${key}" with new value`);
 		localStorage.setItem(key, JSON.stringify(value));
 	}, [key, value]);
 

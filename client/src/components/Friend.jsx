@@ -9,7 +9,7 @@ import { UserContext } from "App";
 const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
   const navigate = useNavigate();
 
-  const { user, token, friendList, handleFriends } = useContext(UserContext);
+  const { user, token, friendList, setFriendList } = useContext(UserContext);
 
   const { palette } = useTheme();
   const primaryLight = palette.primary.light;
@@ -19,6 +19,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
 
   const isFriend = friendList.find((friend) => friend._id === friendId);
 
+  /** ADD OR REMOVE FRIEND */
   const patchFriend = async () => {
     const response = await fetch(`http://localhost:3001/user/${user._id}/${friendId}`, {
       method: "PATCH",
@@ -28,7 +29,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
       },
     });
     const data = await response.json();
-    handleFriends(data);
+    setFriendList(data);
   };
 
   return (
@@ -38,7 +39,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
         <Box
           onClick={() => {
             navigate(`/profile/${friendId}`);
-            navigate(0);
+            // navigate(0);
           }}
         >
           <Typography
@@ -59,16 +60,20 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
           </Typography>
         </Box>
       </FlexBetween>
-      <IconButton
-        onClick={() => patchFriend()}
-        sx={{ backgroundColor: primaryLight, p: "0.6rem" }}
-      >
-        {isFriend ? (
-          <PersonRemoveOutlined sx={{ color: primaryDark }} />
-        ) : (
-          <PersonAddOutlined sx={{ color: primaryDark }} />
-        )}
-      </IconButton>
+      {(friendId === user._id)
+        ? null
+        :
+        <IconButton
+          onClick={patchFriend}
+          sx={{ backgroundColor: primaryLight, p: "0.6rem" }}
+        >
+          {isFriend ? (
+            <PersonRemoveOutlined sx={{ color: primaryDark }} />
+          ) : (
+            <PersonAddOutlined sx={{ color: primaryDark }} />
+          )}
+        </IconButton>
+      }
     </FlexBetween>
   );
 };

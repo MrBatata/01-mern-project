@@ -1,7 +1,8 @@
-import { Box, Typography, useTheme, useMediaQuery } from '@mui/material';
+import React from 'react';
 import Form from './Form';
+import { Box, Typography, useTheme, useMediaQuery } from '@mui/material';
 
-const LoginPage = () => {
+const AuthPage = () => {
   const theme = useTheme();
   const isNonMobileScreens = useMediaQuery('(min-width: 1000px)');
 
@@ -31,4 +32,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default AuthPage;

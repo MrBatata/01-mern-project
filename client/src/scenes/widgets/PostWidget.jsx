@@ -17,11 +17,11 @@ const PostWidget = ({
   postUserId,
   name,
   description,
-  location,
   picturePath,
   userPicturePath,
   likes,
   comments,
+  createdAt,
 }) => {
   const [isComments, setIsComments] = useState(false);
   const { user, token, setPost } = useContext(UserContext);
@@ -46,12 +46,24 @@ const PostWidget = ({
     setPost({ post: updatedPost });
   };
 
+  const originalDate = new Date(createdAt);
+  const utcMinus3Date = new Date(originalDate.getTime() - (3 * 60 * 60 * 1000))
+  const prettierDate = utcMinus3Date.toLocaleString("es-US", {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+    timeZone: "UTC"
+  });
+
   return (
     <WidgetWrapper m="2rem 0">
       <Friend
         friendId={postUserId}
         name={name}
-        subtitle={location}
+        subtitle={prettierDate}
         userPicturePath={userPicturePath}
       />
       <Typography color={main} sx={{ mt: "1rem" }}>
@@ -75,7 +87,9 @@ const PostWidget = ({
                 : (<FavoriteBorderOutlined />)
               }
             </IconButton>
-            <Typography>{likeCount}</Typography>
+            <Typography
+              color={main} sx={{ mt: "1rem" }}
+            >{likeCount}</Typography>
           </FlexBetween>
 
           <FlexBetween gap="0.3rem">
