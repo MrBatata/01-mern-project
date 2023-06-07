@@ -37,8 +37,6 @@ const HomePage = () => {
         {isNonMobileScreens && (
           <Box flexBasis="26%">
             <FriendListWidget />
-            <Box m="2rem 0" />
-            <p>Only in dektop</p>
           </Box>
         )}
       </Box>

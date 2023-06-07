@@ -71,6 +71,7 @@ const Form = () => {
         method: 'POST',
         body: formData,
       });
+      console.log('update');
 
       if (!savedUserResponse.ok) {
         // Handle non-successful response (e.g., 404, 500)
@@ -98,7 +99,8 @@ const Form = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),
       });
-
+      console.log('update');
+      
       if (!loggedInResponse.ok) {
         // Handle non-successful response (e.g., 404, 500)
         throw new Error('Error occurred during login');

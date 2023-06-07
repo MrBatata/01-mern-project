@@ -43,6 +43,7 @@ const MyPostWidget = () => {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
       });
+      console.log('update');
 
       if (!response.ok) {
         // Handle non-successful response (e.g., 404, 500)
@@ -78,6 +79,7 @@ const MyPostWidget = () => {
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
+      console.log('update');
 
       if (!response.ok) {
         // Handle non-successful response (e.g., 404, 500)
@@ -87,8 +89,9 @@ const MyPostWidget = () => {
         throw new Error('Error occurred while creating a post');
       }
 
-      const posts = await response.json();
-      setPosts(posts);
+      const data = await response.json();
+      const sortedPosts = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      setPosts(sortedPosts);
       setImage(null);
       setPost('');
 

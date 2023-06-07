@@ -12,7 +12,7 @@ import UserImage from "components/UserImage";
 import FlexBetween from "components/FlexBetween";
 import WidgetWrapper from "components/WidgetWrapper";
 
-const UserWidget = () => {
+const UserWidget = ({ userProfile, isProfile = false }) => {
   const { palette } = useTheme();
   const navigate = useNavigate();
   const { token, setToken, user, setUser, setPosts, friendList } = useContext(UserContext);
@@ -27,7 +27,7 @@ const UserWidget = () => {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
       });
-  
+      console.log('update');
       if (!response.ok) {
         // Handle non-successful response (e.g., 404, 500)
         setToken(null);
@@ -35,8 +35,9 @@ const UserWidget = () => {
         setPosts([]);
         throw new Error('Error occurred while fetching user');
       };
-  
+
       const data = await response.json();
+      console.log(data);
       setUser(data);
 
     } catch (error) {
@@ -50,14 +51,24 @@ const UserWidget = () => {
   };
 
   useEffect(() => {
-    getUser();
+    if (!isProfile) {
+      getUser();
+    }    // updatedLike in dependencies to refresh all posts when liking/disliking
   }, [friendList]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!user) {
     return null;
   };
 
+  let displayUser = {};
+  if (!isProfile) {
+    displayUser = user;
+  } else {
+    displayUser = userProfile;
+  }
+
   const {
+    _id,
     firstName,
     lastName,
     location,
@@ -65,7 +76,8 @@ const UserWidget = () => {
     viewedProfile,
     impressions,
     friends,
-  } = user;
+    picturePath,
+  } = displayUser;
 
   return (
     <WidgetWrapper>
@@ -73,11 +85,11 @@ const UserWidget = () => {
       <FlexBetween
         gap="0.5rem"
         pb="1.1rem"
-        onClick={() => navigate(`/profile/${user._id}`)}
+        onClick={() => navigate(`/profile/${_id}`)}
       >
 
         <FlexBetween gap="1rem">
-          <UserImage image={user.picturePath}
+          <UserImage image={picturePath}
             sx={{
               cursor: "pointer",
             }}

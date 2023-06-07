@@ -28,6 +28,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
         "Content-Type": "application/json",
       },
     });
+    console.log('update');
     const data = await response.json();
     setFriendList(data);
   };
