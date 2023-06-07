@@ -20,6 +20,8 @@ function App() {
   const [posts, setPosts] = useLocalStorage('posts', []);
   const [friendList, setFriendList] = useLocalStorage('friendList', []);
   const isAuth = Boolean(token);
+  // save in cache the result of the non-argument function untill dependency changes
+  const theme = useMemo(() => createTheme(themeSettings(colorMode)), [colorMode]);
 
   const handleColorMode = () => {
     setColorMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
@@ -32,14 +34,10 @@ function App() {
     setFriendList([]);
   };
 
-  // save in cache the result of the non-argument function untill dependency changes
-  const theme = useMemo(() => createTheme(themeSettings(colorMode)), [colorMode]);
-
   /** DOM */
   return (
     <div className="app">
       <BrowserRouter>
-
         <UserContext.Provider value={{ user, setUser, token, setToken, posts, setPosts, friendList, setFriendList, handleLogout }}>
           <ColorModeContext.Provider value={{ handleColorMode }}>
             <ThemeProvider theme={theme}>
@@ -54,7 +52,6 @@ function App() {
             </ThemeProvider>
           </ColorModeContext.Provider>
         </UserContext.Provider>
-
       </BrowserRouter>
     </div>
   );

@@ -1,18 +1,9 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { UserContext } from 'App';
 import FlexBetween from 'components/FlexBetween';
 import Dropzone from 'react-dropzone';
 import UserImage from 'components/UserImage';
 import WidgetWrapper from 'components/WidgetWrapper';
-import {
-  EditOutlined,
-  DeleteOutlined,
-  AttachFileOutlined,
-  GifBoxOutlined,
-  ImageOutlined,
-  MicOutlined,
-  MoreHorizOutlined,
-} from '@mui/icons-material';
 import {
   Box,
   Divider,
@@ -23,46 +14,30 @@ import {
   IconButton,
   useMediaQuery,
 } from '@mui/material';
+import {
+  EditOutlined,
+  DeleteOutlined,
+  AttachFileOutlined,
+  GifBoxOutlined,
+  ImageOutlined,
+  MicOutlined,
+  MoreHorizOutlined,
+} from '@mui/icons-material';
 
+/** COMPONENTE TO CREATE NEW POST */
 const MyPostWidget = () => {
-  /** DATA */
-  const { token, setToken, user, setUser, setPosts } = useContext(UserContext);
+  const { token, user, setPosts } = useContext(UserContext);
   const [postDescription, setPost] = useState('');
   const [image, setImage] = useState(null);
   const [isImage, setIsImage] = useState(false);
 
   /** STYLES */
   const isNonMobileScreens = useMediaQuery('(min-width: 1000px)');
-  const { palette } = useTheme();
-  const mediumMain = palette.neutral.mediumMain;
-  const medium = palette.neutral.medium;
+  const theme = useTheme();
+  const mediumMain = theme.palette.neutral.mediumMain;
+  const medium = theme.palette.neutral.medium;
 
-  const getUser = async () => {
-    try {
-      const response = await fetch(`http://localhost:3001/user/${user._id}`, {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      console.log('update');
-
-      if (!response.ok) {
-        // Handle non-successful response (e.g., 404, 500)
-        setToken(null);
-        setUser(null);
-        setPosts([]);
-        throw new Error('Error occurred while fetching user');
-      };
-
-    } catch (error) {
-      // Handle the error
-      setToken(null);
-      setUser(null);
-      setPosts([]);
-      console.error(error);
-      // You can show an error message to the user or perform any other necessary actions
-    }
-  };
-
+  /** POST FUNCTION */
   const handlePost = async () => {
     try {
       const formData = new FormData();
@@ -72,23 +47,20 @@ const MyPostWidget = () => {
         console.log(image);
         formData.append('picture', image);
         formData.append('picturePath', image.name);
-      }
+      };
 
       const response = await fetch(`http://localhost:3001/posts/create`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
-      console.log('update');
 
       if (!response.ok) {
         // Handle non-successful response (e.g., 404, 500)
-        setToken(null);
-        setUser(null);
-        setPosts([]);
         throw new Error('Error occurred while creating a post');
       }
 
+      console.log('update');
       const data = await response.json();
       const sortedPosts = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setPosts(sortedPosts);
@@ -97,18 +69,11 @@ const MyPostWidget = () => {
 
     } catch (error) {
       // Handle the error
-      setToken(null);
-      setUser(null);
-      setPosts([]);
       console.error(error);
-      // You can show an error message to the user or perform any other necessary actions
     }
   };
 
-  useEffect(() => {
-    getUser();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
+  /** DOM */
   return (
     <WidgetWrapper>
       <FlexBetween gap='1.5rem'>
@@ -119,7 +84,7 @@ const MyPostWidget = () => {
           value={postDescription}
           sx={{
             width: '100%',
-            backgroundColor: palette.neutral.light,
+            backgroundColor: theme.palette.neutral.light,
             borderRadius: '2rem',
             padding: '1rem 2rem',
           }}
@@ -140,7 +105,7 @@ const MyPostWidget = () => {
               <FlexBetween>
                 <Box
                   {...getRootProps()}
-                  border={`2px dashed ${palette.primary.main}`}
+                  border={`2px dashed ${theme.palette.primary.main}`}
                   borderRadius='10px'
                   p='1rem'
                   width='100%'
@@ -210,9 +175,9 @@ const MyPostWidget = () => {
           disabled={!postDescription}
           onClick={handlePost}
           sx={{
-            backgroundColor: palette.primary.main,
-            color: palette.background.alt,
-            '&:hover': { color: palette.primary.main },
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.background.alt,
+            '&:hover': { color: theme.palette.primary.main },
             '&:disabled': { color: medium, backgroundColor: mediumMain },
             borderRadius: '3rem',
           }}

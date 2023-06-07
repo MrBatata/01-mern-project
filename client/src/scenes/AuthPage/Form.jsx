@@ -100,7 +100,7 @@ const Form = () => {
         body: JSON.stringify(values),
       });
       console.log('update');
-      
+
       if (!loggedInResponse.ok) {
         // Handle non-successful response (e.g., 404, 500)
         throw new Error('Error occurred during login');

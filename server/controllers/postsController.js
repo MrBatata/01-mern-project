@@ -31,9 +31,9 @@ export const createPost = async (req, res, next) => {
     const posts = await Post.find(); // TODO: only return posts of friends (not myself or other users)
     res.status(201).json(posts);
 
-  } catch (err) {
-    console.log(err);
-    res.status(409).json({ error: err.message });
+  } catch (error) {
+    console.log(error);
+    res.status(409).json({ error: error.message });
   }
 };
 
@@ -44,9 +44,9 @@ export const getFeedPosts = async (req, res, next) => {
   try {
     const posts = await Post.find();
     res.status(200).json(posts);
-  } catch (err) {
-    console.log(err);
-    res.status(404).json({ error: err.message });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({ error: error.message });
   }
 };
 
@@ -57,9 +57,9 @@ export const getUserPosts = async (req, res, next) => {
   try {
     const posts = await Post.find({ userId: req.params.userId });
     res.status(200).json(posts);
-  } catch (err) {
-    console.log(err);
-    res.status(404).json({ error: err.message });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({ error: error.message });
   }
 };
 
@@ -96,10 +96,38 @@ export const likePost = async (req, res, next) => {
       { likes },
       { new: true }
     );
-
     res.status(200).json(updatedPost);
-  } catch (err) {
-    console.log(err);
-    res.status(404).json({ error: err.message });
+
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({ error: error.message });
+  }
+};
+
+/** CONTROLLER TO COMMENT A POSTS
+ * router.patch('/:postId/comment', verifyToken, likePost)
+ */
+export const commentPost = async (req, res, next) => {
+  try {
+    const { postId } = req.params;
+    const { userId, firstName, lastName, picturePath, commentText } = req.body; // from front-end request (click on comment button)
+
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ error: 'Post not found' });
+    };
+
+    const newComment = {
+      userId, firstName, lastName, picturePath,
+      commentText,
+    };
+
+    post.comments.push(newComment);
+    const updatedPost = await post.save();
+    res.status(200).json(updatedPost);
+
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({ error: error.message });
   }
 };

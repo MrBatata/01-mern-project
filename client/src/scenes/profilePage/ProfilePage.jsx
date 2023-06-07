@@ -12,17 +12,29 @@ const ProfilePage = () => {
   const { userId } = useParams();
   const [userProfile, setUserProfile] = useState(null);
   const [userProfileFriendList, setUserProfileFriendList] = useState(null);
+  const [userProfilePosts, setUserProfilePosts] = useState(null);
 
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 
   const getUser = async () => {
-    const response = await fetch(`http://localhost:3001/user/${userId}`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const data = await response.json();
-    setUserProfile(data);
-    // console.log(data);
+    try {
+      const response = await fetch(`http://localhost:3001/user/${userId}`, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!response.ok) {
+        // Handle non-successful response (e.g., 404, 500)
+        throw new Error('Error occurred while fetching profile user data');
+      };
+
+      console.log('update');
+      const data = await response.json();
+      setUserProfile(data);
+
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const getUserFriends = async () => {
@@ -31,13 +43,38 @@ const ProfilePage = () => {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
       });
+
       if (!response.ok) {
         // Handle non-successful response (e.g., 404, 500)
-        throw new Error('Error occurred while fetching friends');
+        throw new Error('Error occurred while fetching profile user friends');
       };
-      const data = await response.json();
+
       console.log('update');
+      const data = await response.json();
       setUserProfileFriendList(data);
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getUserPosts = async () => {
+    try {
+      const response = await fetch(`http://localhost:3001/post/${userId}`, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!response.ok) {
+        // Handle non-successful response (e.g., 404, 500)
+        throw new Error('Error occurred while fetching profile user posts');
+      };
+
+      console.log('update');
+      const data = await response.json();
+      const sortedPosts = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      setUserProfilePosts(sortedPosts);
+
     } catch (error) {
       console.error(error);
     }
@@ -46,6 +83,7 @@ const ProfilePage = () => {
   useEffect(() => {
     getUser();
     getUserFriends();
+    getUserPosts();
   }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!userProfile) return null;
@@ -65,20 +103,23 @@ const ProfilePage = () => {
             userProfile={userProfile}
             isProfile={true} />
           <Box m="2rem 0" />
-          <FriendListWidget
-            userProfileId={userId}
-            isProfile={true}
-            userProfileFriendList={userProfileFriendList}
-          />
+          {userProfileFriendList && (
+            <FriendListWidget
+              userProfileFriendList={userProfileFriendList}
+              isProfile={true}
+            />
+          )}
         </Box>
         <Box
           flexBasis={isNonMobileScreens ? "42%" : undefined}
           mt={isNonMobileScreens ? undefined : "2rem"}
         >
-          <PostsWidget
-            userProfileId={userId}
-            isProfile={true}
-          />
+          {userProfilePosts && (
+            <PostsWidget
+              userProfilePosts={userProfilePosts}
+              isProfile={true}
+            />
+          )}
         </Box>
       </Box>
     </Box>

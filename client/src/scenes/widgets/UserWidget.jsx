@@ -1,5 +1,9 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "App";
+import UserImage from "components/UserImage";
+import FlexBetween from "components/FlexBetween";
+import WidgetWrapper from "components/WidgetWrapper";
 import {
   ManageAccountsOutlined,
   EditOutlined,
@@ -7,53 +11,48 @@ import {
   WorkOutlineOutlined,
 } from "@mui/icons-material";
 import { Box, Typography, Divider, useTheme } from "@mui/material";
-import { UserContext } from "App";
-import UserImage from "components/UserImage";
-import FlexBetween from "components/FlexBetween";
-import WidgetWrapper from "components/WidgetWrapper";
 
+/** COMPONENT TO DISPLAY USER INFORMATION */
 const UserWidget = ({ userProfile, isProfile = false }) => {
-  const { palette } = useTheme();
-  const navigate = useNavigate();
-  const { token, setToken, user, setUser, setPosts, friendList } = useContext(UserContext);
-  const dark = palette.neutral.dark;
-  const medium = palette.neutral.medium;
-  const main = palette.neutral.main;
-  const hover = palette.primary.light;
 
+  const { token, user, setUser, friendList } = useContext(UserContext);
+  const theme = useTheme();
+  const navigate = useNavigate();
+
+  /** STYLES */
+  const dark = theme.palette.neutral.dark;
+  const medium = theme.palette.neutral.medium;
+  const main = theme.palette.neutral.main;
+  const hover = theme.palette.primary.light;
+
+  /** FETCH LOGGED USER DATA FROM SERVER */
   const getUser = async () => {
     try {
       const response = await fetch(`http://localhost:3001/user/${user._id}`, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log('update');
+
       if (!response.ok) {
         // Handle non-successful response (e.g., 404, 500)
-        setToken(null);
-        setUser(null);
-        setPosts([]);
         throw new Error('Error occurred while fetching user');
       };
-
+      
+      console.log('update');
       const data = await response.json();
       console.log(data);
       setUser(data);
 
     } catch (error) {
       // Handle the error
-      setToken(null);
-      setUser(null);
-      setPosts([]);
       console.error(error);
-      // You can show an error message to the user or perform any other necessary actions
     }
   };
 
   useEffect(() => {
     if (!isProfile) {
       getUser();
-    }    // updatedLike in dependencies to refresh all posts when liking/disliking
+    };
   }, [friendList]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!user) {
@@ -65,7 +64,7 @@ const UserWidget = ({ userProfile, isProfile = false }) => {
     displayUser = user;
   } else {
     displayUser = userProfile;
-  }
+  };
 
   const {
     _id,
@@ -79,6 +78,7 @@ const UserWidget = ({ userProfile, isProfile = false }) => {
     picturePath,
   } = displayUser;
 
+  /** DOM */
   return (
     <WidgetWrapper>
       {/* FIRST ROW */}
@@ -201,6 +201,7 @@ const UserWidget = ({ userProfile, isProfile = false }) => {
             }} />
         </FlexBetween>
       </Box>
+      
     </WidgetWrapper>
   );
 };

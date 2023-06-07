@@ -1,11 +1,12 @@
-import { Box, Typography, useTheme } from "@mui/material";
-import { UserContext } from "App";
-import Friend from "components/Friend";
-import WidgetWrapper from "components/WidgetWrapper";
-import { useContext, useEffect } from "react";
+import React, { useContext, useState, useEffect } from 'react';
+import { Box, Typography, useTheme } from '@mui/material';
+import { UserContext } from 'App';
+import Friend from 'components/Friend';
+import WidgetWrapper from 'components/WidgetWrapper';
 
 const FriendListWidget = ({ userProfileFriendList, isProfile = false }) => {
   const { user, token, friendList, setFriendList } = useContext(UserContext);
+  const [isLoadingFriends, setIsLoadingFriends] = useState(true);
   const theme = useTheme();
 
   const getFriends = async () => {
@@ -14,15 +15,21 @@ const FriendListWidget = ({ userProfileFriendList, isProfile = false }) => {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
       });
+
       if (!response.ok) {
         // Handle non-successful response (e.g., 404, 500)
-        throw new Error('Error occurred while fetching friends');
+        setIsLoadingFriends(false);
+        throw new Error('Error occurred while fetching profile user friends');
       };
-      const data = await response.json();
+
       console.log('update');
+      const data = await response.json();
       setFriendList(data);
+      setIsLoadingFriends(false);
+
     } catch (error) {
       console.error(error);
+      setIsLoadingFriends(false);
     }
   };
 
@@ -34,16 +41,28 @@ const FriendListWidget = ({ userProfileFriendList, isProfile = false }) => {
     <WidgetWrapper>
       <Typography
         color={theme.palette.neutral.dark}
-        variant="h5"
-        fontWeight="500"
-        sx={{ mb: "1.5rem" }}
+        variant='h5'
+        fontWeight='500'
+        sx={{ mb: '1.5rem' }}
       >
         Friend List
       </Typography>
-      <Box display="flex" flexDirection="column" gap="1.5rem">
+      <Box display='flex' flexDirection='column' gap='1.5rem'>
         {
-          (!isProfile)
-            ? (friendList.map((friend) => (
+          ((!isProfile)
+            ? (isLoadingFriends
+              ? 'Loading...'
+              : (friendList.map((friend) => (
+                <Friend
+                  key={friend._id}
+                  friendId={friend._id}
+                  name={`${friend.firstName} ${friend.lastName}`}
+                  subtitle={friend.location}
+                  userPicturePath={friend.picturePath}
+                />
+              )))
+            )
+            : (userProfileFriendList.map((friend) => (
               <Friend
                 key={friend._id}
                 friendId={friend._id}
@@ -52,8 +71,7 @@ const FriendListWidget = ({ userProfileFriendList, isProfile = false }) => {
                 userPicturePath={friend.picturePath}
               />
             )))
-            :'(userProfileFriendList[0].firstName)'
-
+          )
         }
       </Box>
     </WidgetWrapper>
