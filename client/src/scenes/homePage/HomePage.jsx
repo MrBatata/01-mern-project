@@ -9,15 +9,17 @@ import FriendListWidget from 'scenes/widgets/FriendListWidget';
 const HomePage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1100px)");
 
+  /** DOM */
   return (
     <Box>
       <Navbar />
+
       <Box
+        display={isNonMobileScreens ? "flex" : "block"}
+        justifyContent="space-between"
         width="100%"
         padding="2rem 6%"
-        display={isNonMobileScreens ? "flex" : "block"}
         gap="0.5rem"
-        justifyContent="space-between"
       >
         {/* SECTION 1 */}
         <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>

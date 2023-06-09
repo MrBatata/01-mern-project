@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { UserContext } from 'App';
 import FlexBetween from 'components/FlexBetween';
 import Friend from 'components/Friend';
@@ -24,10 +24,8 @@ const PostWidget = ({
   likes,
   comments,
   createdAt,
-  setUpdatedLike,
-  setUpdatedComment
 }) => {
-  const { user, token } = useContext(UserContext);
+  const { user, token, setUpdatedComment, setUpdatedLike } = useContext(UserContext);
   const [commentText, setCommentText] = useState('');
   const [isComments, setIsComments] = useState(false);
   const isLiked = Boolean(likes[user._id]);
@@ -46,6 +44,7 @@ const PostWidget = ({
   const main = theme.palette.neutral.main;
   const primary = theme.palette.primary.main;
 
+
   /** FUNCTION TO LIKE A POST AND GET THE UPDATED ONE */
   const patchLike = async () => {
     try {
@@ -57,13 +56,13 @@ const PostWidget = ({
         },
         body: JSON.stringify({ userId: user._id }),
       });
+      console.log('update');
 
       if (!response.ok) {
         // Handle non-successful response (e.g., 404, 500)
         throw new Error('Error occurred while fetching post like');
       };
 
-      console.log('update');
       const updatedPost = await response.json();
       setUpdatedLike(updatedPost);
 
@@ -89,15 +88,16 @@ const PostWidget = ({
           picturePath: user.picturePath,
         }),
       });
+      console.log('update');
 
       if (!response.ok) {
         // Handle non-successful response (e.g., 404, 500)
         throw new Error('Error occurred while fetching post comment');
       };
 
-      console.log('update');
       const updatedPost = await response.json();
       setUpdatedComment(updatedPost);
+      setCommentText('');
 
     } catch (error) {
       console.log(error);
@@ -116,10 +116,6 @@ const PostWidget = ({
     hour12: true,
     timeZone: 'UTC'
   });
-
-  useEffect(() => {
-    setCommentText(''); // Restablecer el campo de texto de comentario
-  }, [setUpdatedComment]);
 
   /** DOM */
   return (

@@ -3,9 +3,11 @@ import Form from './Form';
 import { Box, Typography, useTheme, useMediaQuery } from '@mui/material';
 
 const AuthPage = () => {
+  /** STYLES */
   const theme = useTheme();
   const isNonMobileScreens = useMediaQuery('(min-width: 1000px)');
 
+  /** DOM */
   return (
     <Box>
       <Box width='100%'
@@ -26,7 +28,10 @@ const AuthPage = () => {
         <Typography fontWeight='500' variant='h5' sx={{ mb: '1.5rem' }}>
           MrBatata welcomes you!
         </Typography>
+
+        {/* REGISTER OR LOGIN */}
         <Form />
+
       </Box>
     </Box>
   );

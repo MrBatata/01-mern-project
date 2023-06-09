@@ -14,6 +14,7 @@ import {
   useTheme,
 } from '@mui/material';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { toast } from 'react-hot-toast';
 
 /** YUP VALIDATION FOR REGISTER */
 const registerSchema = yup.object().shape({
@@ -48,15 +49,15 @@ const initialValuesLogin = {
 };
 
 const Form = () => {
-  const navigate = useNavigate();
-  const theme = useTheme();
-  const isNonMobile = useMediaQuery('(min-width:600px)');
-
   const { setUser, setToken } = useContext(UserContext);
   const [pageType, setPageType] = useState('login');
-
   const isLogin = pageType === 'login';
   const isRegister = pageType === 'register';
+  const navigate = useNavigate();
+
+  /** STYLES */
+  const theme = useTheme();
+  const isNonMobile = useMediaQuery('(min-width:600px)');
 
   const register = async (values, onSubmitProps) => {
     try {
@@ -88,7 +89,6 @@ const Form = () => {
     } catch (error) {
       // Handle the error
       console.error(error);
-      // You can show an error message to the user or perform any other necessary actions
     }
   };
 
@@ -113,13 +113,21 @@ const Form = () => {
         console.log('loggedIn: ', loggedIn);
         setUser(loggedIn.userWithoutPassword);
         setToken(loggedIn.token);
+        toast.success(
+          <Typography variant='h4'
+            sx={{
+              ml:'2rem'
+            }}
+          >
+            Bienvenid@ mi estimad@ <b>{loggedIn.userWithoutPassword.firstName}</b>
+          </Typography>
+        )
         navigate('/home');
       };
 
     } catch (error) {
       // Handle the error
       console.error(error);
-      // You can show an error message to the user or perform any other necessary actions
     }
   };
 
@@ -128,6 +136,8 @@ const Form = () => {
     if (isRegister) await register(values, onSubmitProps);
   };
 
+
+  /** DOM */
   return (
     <Formik
       onSubmit={handleFormSubmit}

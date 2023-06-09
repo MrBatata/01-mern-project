@@ -14,7 +14,6 @@ import { Box, Typography, Divider, useTheme } from "@mui/material";
 
 /** COMPONENT TO DISPLAY USER INFORMATION */
 const UserWidget = ({ userProfile, isProfile = false }) => {
-
   const { token, user, setUser, friendList } = useContext(UserContext);
   const theme = useTheme();
   const navigate = useNavigate();
@@ -32,15 +31,14 @@ const UserWidget = ({ userProfile, isProfile = false }) => {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
       });
+      console.log('update');
 
       if (!response.ok) {
         // Handle non-successful response (e.g., 404, 500)
         throw new Error('Error occurred while fetching user');
       };
-      
-      console.log('update');
+
       const data = await response.json();
-      console.log(data);
       setUser(data);
 
     } catch (error) {
@@ -50,9 +48,7 @@ const UserWidget = ({ userProfile, isProfile = false }) => {
   };
 
   useEffect(() => {
-    if (!isProfile) {
-      getUser();
-    };
+    getUser();
   }, [friendList]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!user) {
@@ -201,7 +197,7 @@ const UserWidget = ({ userProfile, isProfile = false }) => {
             }} />
         </FlexBetween>
       </Box>
-      
+
     </WidgetWrapper>
   );
 };

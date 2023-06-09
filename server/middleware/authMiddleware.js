@@ -18,32 +18,37 @@ export const verifyToken = (req, res, next) => {
 	} catch (err) {
 		res.status(500).json({ error: err.message }); // TODO: handle errors		
 	}
+};
 
-	// other way... with package cookie-parser
-	/* 
-	// try to obtain jwt from cookies
-	const token = req.cookies.jwt;
+export const verifyTokenCookie = (req, res, next) => {
+	try {
+		// other way... with package cookie-parser
+		// try to obtain jwt from cookies
+		const token = req.cookies.jwt;
 
-	// check if jwt exists in cookies and verifies if it is authentic with jsonwebtoken method
-	if (token) {
-		// no need to import dotenv to use process.env again (already in app.js)
-		jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decodedToken) => {
-			if (err) {
-				console.log(err.message);
-				res.redirect('/login');
-			} else {
-				console.log(decodedToken);
-				next();
-			};
-		});
-	} else {
-		res.redirect('/login');
-	};
- */
+		// check if jwt exists in cookies and verifies if it is authentic with jsonwebtoken method
+		if (token) {
+			// no need to import dotenv to use process.env again (already in index.js)
+			jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decodedToken) => {
+				if (err) {
+					console.log(err.message);
+					res.redirect('/login');
+				} else {
+					console.log(decodedToken);
+					next();
+				};
+			});
+		} else {
+			res.redirect('/login');
+		};
+
+	} catch (err) {
+		res.status(500).json({ error: err.message }); // TODO: handle errors		
+	}
 };
 
 /** Middleware to obtain user data if valid token */
-const obtainUser = (req, res, next) => {
+export const obtainUser = (req, res, next) => {
 	// try to obtain jwt from cookies
 	const token = req.cookies.jwt;
 

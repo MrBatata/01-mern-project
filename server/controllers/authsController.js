@@ -48,7 +48,8 @@ export const registerController = async (req, res, next) => {
     // Need to send status, token as cookie and user (just id or email) to the browser
     res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 }); // cookie duration in miliseconds
 
-    res.status(201).json(savedUser); // TODO: check sending hashed password to client?
+    res.status(201).json(savedUser);
+
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: err.message });
@@ -76,9 +77,18 @@ export const login = async (req, res, next) => {
     const token = createToken(loggedUser._id);
     // Need to send status, token as cookie and user (just id or email) to the browser
     res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 }); // cookie duration in miliseconds
-    res.status(200).json({ userWithoutPassword, token }); // TODO: check sending hashed password to client?
+    res.status(200).json({ userWithoutPassword, token });
+
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: err.message });
   }
 };
+
+/** USER LOGOUT CONTROLLER */
+// export const logout_get = (req, res) => {
+// 	// not possible to delete cookie from browser
+// 	// so we update the jwt cookie for a dummy one and with a almost null duration (1 milisec)
+// 	res.cookie('jwt', '', { maxAge: 1 });
+// 	res.redirect('/');
+// };

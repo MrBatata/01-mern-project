@@ -1,25 +1,27 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import FriendListWidget from "scenes/widgets/FriendListWidget";
-import PostsWidget from "scenes/widgets/PostsWidget";
-import UserWidget from "scenes/widgets/UserWidget";
-import { UserContext } from "App";
-import Navbar from "scenes/navbar/Navbar";
-import { Box, useMediaQuery } from "@mui/material";
+import React, { useContext, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import FriendListWidget from 'scenes/widgets/FriendListWidget';
+import PostsWidget from 'scenes/widgets/PostsWidget';
+import UserWidget from 'scenes/widgets/UserWidget';
+import { UserContext } from 'App';
+import Navbar from 'scenes/navbar/Navbar';
+import { Box, useMediaQuery } from '@mui/material';
 
 const ProfilePage = () => {
-  const { token } = useContext(UserContext);
+  const { token, friendList, updatedComment, updatedLike } = useContext(UserContext);
   const { userId } = useParams();
   const [userProfile, setUserProfile] = useState(null);
   const [userProfileFriendList, setUserProfileFriendList] = useState(null);
   const [userProfilePosts, setUserProfilePosts] = useState(null);
 
-  const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
+  /** STYLES */
+  const isNonMobileScreens = useMediaQuery('(min-width:1000px)');
 
-  const getUser = async () => {
+  /** FETCH USER FOR PROFILE PAGE DATA */
+  const getUserData = async () => {
     try {
       const response = await fetch(`http://localhost:3001/user/${userId}`, {
-        method: "GET",
+        method: 'GET',
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -37,10 +39,11 @@ const ProfilePage = () => {
     }
   };
 
+  /** FETCH USER FOR PROFILE PAGE FRIEND LIST */
   const getUserFriends = async () => {
     try {
       const response = await fetch(`http://localhost:3001/user/${userId}/friends`, {
-        method: "GET",
+        method: 'GET',
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -58,6 +61,7 @@ const ProfilePage = () => {
     }
   };
 
+  /** FETCH USER FOR PROFILE PAGE FRIEND POSTS */
   const getUserPosts = async () => {
     try {
       const response = await fetch(`http://localhost:3001/post/${userId}`, {
@@ -81,28 +85,37 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
-    getUser();
+    getUserData();
     getUserFriends();
     getUserPosts();
-  }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [userId, friendList, updatedComment, updatedLike]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!userProfile) return null;
 
+  /** DOM */
   return (
     <Box>
       <Navbar />
+
       <Box
-        width="100%"
-        padding="2rem 6%"
-        display={isNonMobileScreens ? "flex" : "block"}
-        gap="2rem"
-        justifyContent="center"
+        width='100%'
+        padding='2rem 6%'
+        display={isNonMobileScreens ? 'flex' : 'block'}
+        gap='2rem'
+        justifyContent='center'
       >
-        <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
+        {/* USER DATA */}
+        <Box flexBasis={isNonMobileScreens ? '26%' : undefined}>
+
+          {/* USER PROFILE */}
           <UserWidget
             userProfile={userProfile}
-            isProfile={true} />
-          <Box m="2rem 0" />
+            isProfile={true}
+          />
+
+          <Box mb='2rem' />
+
+          {/* USER FRIENDS */}
           {userProfileFriendList && (
             <FriendListWidget
               userProfileFriendList={userProfileFriendList}
@@ -110,9 +123,11 @@ const ProfilePage = () => {
             />
           )}
         </Box>
+
+        {/* USER POSTS */}
         <Box
-          flexBasis={isNonMobileScreens ? "42%" : undefined}
-          mt={isNonMobileScreens ? undefined : "2rem"}
+          flexBasis={isNonMobileScreens ? '42%' : undefined}
+          mt={isNonMobileScreens ? undefined : '2rem'}
         >
           {userProfilePosts && (
             <PostsWidget
